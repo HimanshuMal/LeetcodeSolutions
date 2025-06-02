@@ -1,0 +1,60 @@
+class Solution {
+    public int minTimeToReach(int[][] moveTime) {
+        PriorityQueue<Triplet> queue = new PriorityQueue<>();
+        queue.add(new Triplet(0,0,0));
+        int ans = Integer.MAX_VALUE;
+
+        int[][] dir = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+
+        boolean[][] visited = new boolean[moveTime.length][moveTime[0].length];
+
+        while(queue.size()!=0){
+            Triplet t = queue.remove();
+
+            if(t.i==moveTime.length-1 && t.j==moveTime[0].length-1){
+                ans = Math.min(ans, t.currTime);
+                continue;
+            }
+
+            if(visited[t.i][t.j]){
+                continue;
+            }
+
+            visited[t.i][t.j] = true;
+
+            for(int[] d: dir){
+                int x = t.i+d[0];
+                int y = t.j+d[1];
+
+                if(x<moveTime.length && x>=0 && y<moveTime[0].length && y>=0){
+                    if(visited[x][y]==false){
+                            if(t.currTime >= moveTime[x][y]){
+                            queue.add(new Triplet(x, y, t.currTime+1));
+                        }
+                        else{
+                            queue.add(new Triplet(x, y, moveTime[x][y]+1));
+                        }
+                    }         
+                }
+            }
+        }
+
+        return ans;
+    }
+}
+
+public class Triplet implements Comparable<Triplet>{
+    int i;
+    int j;
+    int currTime;
+
+    public Triplet(int i, int j, int currTime){
+        this.i=i;
+        this.j=j;
+        this.currTime=currTime;
+    }
+
+    public int compareTo(Triplet other){
+        return Integer.compare(this.currTime, other.currTime);
+    }
+}
